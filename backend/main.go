@@ -22,7 +22,7 @@ func enableCORS(next http.Handler) http.Handler {
 }
 
 func main() {
-	store := NewTaskStore()
+	store := NewTaskStore("tasks.json")
 	handler := NewHandler(store)
 
 	mux := http.NewServeMux()
