@@ -14,12 +14,16 @@ export default function TaskCard({ task, onUpdate, onDelete }) {
     setIsEditing(false);
   };
 
-  const handleMove = (newStatus) => {
-    onUpdate(task.id, { status: newStatus });
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData('text/plain', task.id);
   };
 
   return (
-    <div className="task-card">
+    <div 
+      className="task-card" 
+      draggable={!isEditing} 
+      onDragStart={handleDragStart}
+    >
       {isEditing ? (
         <form onSubmit={handleSave} className="task-edit-form">
           <input
@@ -51,7 +55,7 @@ export default function TaskCard({ task, onUpdate, onDelete }) {
             <button onClick={() => setIsEditing(true)} className="btn-edit">Editar</button>
             <select
               value={task.status}
-              onChange={(e) => handleMove(e.target.value)}
+              onChange={(e) => onUpdate(task.id, { status: e.target.value })}
               className="status-select"
             >
               {COLUMNS.map((col) => (
