@@ -1,6 +1,6 @@
 # Mini Kanban de Tarefas
 
-Desafio técnico fullstack — Veritas Consultoria Empresarial.
+Desafio técnico fullstack: Veritas Consultoria Empresarial.
 
 Aplicação simples de Kanban com três colunas fixas (**A Fazer**, **Em Progresso**, **Concluídas**), permitindo criar, editar, mover e excluir tarefas. Backend em **Go** (API REST) e frontend em **React**.
 
