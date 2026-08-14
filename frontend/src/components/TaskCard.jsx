@@ -18,10 +18,23 @@ export default function TaskCard({ task, onUpdate, onDelete }) {
     e.dataTransfer.setData('text/plain', task.id);
   };
 
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'A Fazer':
+        return 'card-todo';
+      case 'Em Progresso':
+        return 'card-in-progress';
+      case 'Concluídas':
+        return 'card-done';
+      default:
+        return '';
+    }
+  };
+
   return (
-    <div 
-      className="task-card" 
-      draggable={!isEditing} 
+    <div
+      className={`task-card ${getStatusClass(task.status)}`}
+      draggable={!isEditing}
       onDragStart={handleDragStart}
     >
       {isEditing ? (
@@ -31,12 +44,13 @@ export default function TaskCard({ task, onUpdate, onDelete }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
+            autoFocus
           />
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Descrição..."
-            rows={2}
+            placeholder="Descrição da tarefa..."
+            rows={3}
           />
           <div className="card-actions">
             <button type="submit" className="btn-save">Salvar</button>
@@ -45,18 +59,28 @@ export default function TaskCard({ task, onUpdate, onDelete }) {
         </form>
       ) : (
         <>
+          <div className="task-badge-wrapper">
+            <span className={`status-badge ${getStatusClass(task.status)}`}>
+              {task.status}
+            </span>
+            <button onClick={() => onDelete(task.id)} className="btn-delete" title="Excluir tarefa">✕</button>
+          </div>
+
           <div className="task-header">
             <h4>{task.title}</h4>
-            <button onClick={() => onDelete(task.id)} className="btn-delete" title="Excluir">✕</button>
           </div>
+
           {task.description && <p className="task-desc">{task.description}</p>}
 
           <div className="task-footer">
-            <button onClick={() => setIsEditing(true)} className="btn-edit">Editar</button>
+            <button onClick={() => setIsEditing(true)} className="btn-edit">
+              ✏️ Editar
+            </button>
             <select
               value={task.status}
               onChange={(e) => onUpdate(task.id, { status: e.target.value })}
               className="status-select"
+              title="Mover tarefa"
             >
               {COLUMNS.map((col) => (
                 <option key={col} value={col}>{col}</option>
