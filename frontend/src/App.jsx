@@ -8,6 +8,8 @@ const COLUMNS = ['A Fazer', 'Em Progresso', 'Concluídas'];
 
 export default function App() {
   const [tasks, setTasks] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [appliedSearch, setAppliedSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -55,25 +57,57 @@ export default function App() {
     }
   };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setAppliedSearch(inputValue.trim());
+  };
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setInputValue(val);
+    if (val === '') {
+      setAppliedSearch('');
+    }
+  };
+
+  const filteredTasks = tasks.filter((t) =>
+    t.title.toLowerCase().includes(appliedSearch.toLowerCase()) ||
+    (t.description && t.description.toLowerCase().includes(appliedSearch.toLowerCase()))
+  );
+
   return (
     <div className="app-container">
+      {/* Header com Título e Barra de Busca */}
       <header className="app-header">
         <h2>Mini Kanban</h2>
+        <form onSubmit={handleSearchSubmit} className="search-bar-wrapper">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            placeholder="Buscar tarefas e tecle Enter..."
+            value={inputValue}
+            onChange={handleInputChange}
+            className="search-input"
+          />
+        </form>
       </header>
 
       <main className="app-main">
+        {/* Formulário de Adicionar Tarefa */}
         <TaskForm onAddTask={handleAddTask} />
 
-        {loading && <p className="status-msg">⏳ Carregando tarefas...</p>}
+        {/* Feedbacks Visuais */}
+        {loading && <p className="status-msg loading">⏳ Carregando tarefas...</p>}
         {error && <p className="status-msg error-msg">⚠️ {error}</p>}
 
+        {/* Quadro Kanban */}
         {!loading && !error && (
           <div className="kanban-board">
             {COLUMNS.map((col) => (
               <Column
                 key={col}
                 title={col}
-                tasks={tasks.filter((t) => t.status === col)}
+                tasks={filteredTasks.filter((t) => t.status === col)}
                 onUpdateTask={handleUpdateTask}
                 onDeleteTask={handleDeleteTask}
               />
