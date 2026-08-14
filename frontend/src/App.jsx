@@ -64,8 +64,8 @@ export default function App() {
       <main className="app-main">
         <TaskForm onAddTask={handleAddTask} />
 
-        {loading && <p className="status-msg">Carregando tarefas...</p>}
-        {error && <p className="status-msg error-msg">{error}</p>}
+        {loading && <p className="status-msg">⏳ Carregando tarefas...</p>}
+        {error && <p className="status-msg error-msg">⚠️ {error}</p>}
 
         {!loading && !error && (
           <div className="kanban-board">
